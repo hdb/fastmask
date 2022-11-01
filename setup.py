@@ -1,10 +1,18 @@
 from setuptools import setup, find_packages
 
+with open("readme.md", "r") as fh:
+    long_description = fh.read()
+
 exec(open('fastmask/version.py').read())
 
 setup(
     name='fastmask',
     version=__version__,
+    description='Python library + CLI for Fastmail masked email',
+    long_description=long_description,
+    author='Hudson Bailey',
+    author_email='dev@hudsonbailey.org',
+    url='https://github.com/hdb/fastmask',
     license='MIT',
     packages=find_packages(),
     include_package_data=True,
