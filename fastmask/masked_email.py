@@ -14,6 +14,7 @@ class MaskedMailClient:
     Client for interfacing with Fastmail's Masked Email JMAP API
 
     https://www.fastmail.com/developer/maskedemail/
+
     https://jmap.io/
     """
 
@@ -32,7 +33,7 @@ class MaskedMailClient:
     def get_session(self) -> dict:
         """Return the JMAP Session Resource as a Python dict
 
-        Borrowed from Fastmail's tiny_jmap_library.py https://github.com/fastmail/JMAP-Samples
+        Borrowed from Fastmail's tiny_jmap_library.py: https://github.com/fastmail/JMAP-Samples
         """
 
         try:
@@ -62,7 +63,7 @@ class MaskedMailClient:
         """Return the accountId for the account matching self.username
 
 
-        Borrowed from Fastmail's tiny_jmap_library.py https://github.com/fastmail/JMAP-Samples
+        Borrowed from Fastmail's tiny_jmap_library.py: https://github.com/fastmail/JMAP-Samples
         """
         try:
             if self.account_id:
@@ -72,7 +73,7 @@ class MaskedMailClient:
 
         session = self.get_session()
 
-        return session["primaryAccounts"]["urn:ietf:params:jmap:mail"]
+        return session["primaryAccounts"][JMAP_CORE]
 
     def __jmap_call(self, call: dict) -> dict:
         """
