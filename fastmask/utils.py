@@ -51,7 +51,7 @@ class PrettyTable():
         return try_get(
             'transform',
             ref,
-            (lambda x: x if x is not None else '')
+            (lambda x: x.replace('[','\[') if x is not None else '') # escape brackets for Rich rendering
         )(datum)
 
     def generate_rows(self, data_: list[dict]) -> None:
