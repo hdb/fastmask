@@ -10,6 +10,7 @@ setup(
     version=__version__,
     description='Python library + CLI for Fastmail masked email',
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author='Hudson Bailey',
     author_email='dev@hudsonbailey.org',
     url='https://github.com/hdb/fastmask',
