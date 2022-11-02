@@ -1,6 +1,6 @@
-# Fastmask
+# fastmask
 
-Python library and CLI for Fastmail's Masked Email
+Python library and command line tool for Fastmail's Masked Email
 
 ## Install
 
@@ -27,3 +27,5 @@ Commands:
   new       Create a new masked email
   search    Search for masked emails
 ```
+
+See full CLI and library documentation at https://fastmask.readthedocs.io/
