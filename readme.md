@@ -15,7 +15,7 @@ fastmask [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --username TEXT  [default: (FM_USERNAME)]
-  --token TEXT     [default: (FM_TOKEN)]
+  --token TEXT     [default: (FM_ME_TOKEN)]
   --help           Show this message and exit.
 
 Commands:

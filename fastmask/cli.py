@@ -25,8 +25,8 @@ EMAIL_PATTERN = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 )
 @click.option(
     "--token",
-    default=lambda: os.environ.get("FM_TOKEN", ""),
-    show_default="FM_TOKEN",
+    default=lambda: os.environ.get("FM_ME_TOKEN", ""),
+    show_default="FM_ME_TOKEN",
 )
 @click.pass_context
 def cli(context, username: str, token: str):

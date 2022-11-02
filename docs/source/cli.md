@@ -9,7 +9,7 @@ fastmask [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --username TEXT  [default: (FM_USERNAME)]
-  --token TEXT     [default: (FM_TOKEN)]
+  --token TEXT     [default: (FM_ME_TOKEN)]
   --help           Show this message and exit.
 
 Commands:
@@ -28,10 +28,10 @@ You will need to provide an API token for fastmask to authenticate calls to the 
 
 1. In the Fastmail web client, go to `Settings` > `Account` > `Password & Security` > `API Tokens` > `Manage` > `New API token`
 2. Set name to "fastmask" or whatever you'd like, check only the `Masked Email` scope and hit `Generate API token`
-3. Copy the API token. You can authenticate either by providing your credentials as arguments or by using the `FM_TOKEN` and `FM_USERNAME` environment variables (recommended):
+3. Copy the API token. You can authenticate either by providing your credentials as arguments or by using the `FM_ME_TOKEN` and `FM_USERNAME` environment variables (recommended):
 
 ```bash
-export FM_TOKEN='YOUR-TOKEN-HERE'
+export FM_ME_TOKEN='YOUR-TOKEN-HERE'
 export FM_USERNAME='username@fastmail.com'
 
 fastmask list --limit 5
