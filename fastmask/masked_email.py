@@ -246,7 +246,7 @@ class MaskedMailClient:
 
         query = query.lower()
         return self.get(filters=(
-            lambda x: any(query in x[f].lower() for f in fields)
+            lambda x: any(query in x[f].lower() for f in fields if x[f] is not None)
         ))
 
     def get_recent(self, timeframe: timedelta = timedelta(days=3)) -> list[dict]:
