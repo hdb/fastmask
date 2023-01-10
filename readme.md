@@ -2,9 +2,14 @@
 
 Python library and command line tool for Fastmail's Masked Email
 
-## Install
+## Install & Setup
 
-`pip install fastmask`
+```bash
+pip install fastmask
+
+export FM_ME_TOKEN='YOUR-API-TOKEN-HERE'
+export FM_USERNAME='user@domain.com'
+```
 
 ## Usage
 

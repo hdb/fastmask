@@ -74,6 +74,7 @@ Options:
   --sort                          Field to sort by
   --desc / --asc                  Sort order
   --recent INTEGER                Only show items from the past X days
+  -o, --out TEXT                  Output to csv
   --help                          Show this message and exit.
 ```
 
@@ -128,5 +129,5 @@ fastmask search --field createdAt 2022-10-31
 ```
 
 ```bash
-fastmask search --field createdBy fastmask
+fastmask search --field createdBy fastmask -o out.csv
 ```

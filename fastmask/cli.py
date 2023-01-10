@@ -10,6 +10,7 @@ import click
 from datetime import datetime, timezone, timedelta
 import os
 import re
+import pandas as pd
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -46,8 +47,9 @@ def cli(context, username: str, token: str):
     , case_sensitive=False), help='Field to sort by')
 @click.option('--desc/--asc', default=False, help='Sort order')
 @click.option('--recent', default=None, type=int, help='Only show items from the past X days')
+@click.option('-o', '--out', default=None, type=str, help='Output to csv')
 @click.pass_obj
-def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, recent: int | None, sort: str | None, desc: bool):
+def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, recent: int | None, sort: str | None, desc: bool, out: str | None):
     """List masked emails associated with account"""
     
     state_map = {
@@ -68,15 +70,19 @@ def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, rec
     filters = (lambda x: state_map[state](x) and recent_filter(x))
 
     results = client.get(filters=filters, limit=limit, sort_by=sort, sort_order='desc' if desc else 'asc')
-    PrettyTable(results, title=f'Masked Emails {client.account_id}').out()
+    if out is not None:
+        pd.DataFrame(results).to_csv(out, index=False)
+    else:
+        PrettyTable(results, title=f'Masked Emails {client.account_id}').out()
 
 @cli.command()
 @click.argument('query', default='')
 @click.option('--blank', is_flag=True)
 @click.option('--field', '-f', 'fields', multiple=True, default=['email', 'description'])
 @click.option('--limit', default=None, type=int, help='Limit number of results')
+@click.option('-o', '--out', default=None, type=str, help='Output to csv')
 @click.pass_obj
-def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], blank: bool):
+def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], blank: bool, out: str | None):
     """Search for masked emails"""
     
     if blank:
@@ -86,7 +92,10 @@ def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], 
     else:
         results = client.search(query=query, fields=fields)
 
-    PrettyTable(results, title=f'Search results for "{query if query is not None else ""}"').out()
+    if out is not None:
+        pd.DataFrame(results).to_csv(out, index=False)
+    else:
+        PrettyTable(results, title=f'Search results for "{query if query is not None else ""}"').out()
 
 @cli.command()
 @click.argument('description', default='')

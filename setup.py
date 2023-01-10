@@ -22,6 +22,7 @@ setup(
         'requests',
         'python-dotenv',
         'rich',
+        'pandas',
     ],
     entry_points={
         'console_scripts': [
