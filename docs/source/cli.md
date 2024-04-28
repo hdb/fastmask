@@ -28,7 +28,11 @@ You will need to provide an API token for fastmask to authenticate calls to the 
 
 1. In the Fastmail web client, go to `Settings` > `Account` > `Password & Security` > `API Tokens` > `Manage` > `New API token`
 2. Set name to "fastmask" or whatever you'd like, check only the `Masked Email` scope and hit `Generate API token`
-3. Copy the API token. You can authenticate either by providing your credentials as arguments or by using the `FM_ME_TOKEN` and `FM_USERNAME` environment variables (recommended):
+3. Copy the API token. You can authenticate either by providing your credentials as arguments, or by using the `FM_ME_TOKEN` and `FM_USERNAME` environment variables / providing these variables via `.env` file:
+
+You can skip parsing `.env` with `python-dotenv` by setting the environment variable `SKIP_PYTHONDOTENV=1`.
+
+Example:
 
 ```bash
 export FM_ME_TOKEN='YOUR-TOKEN-HERE'

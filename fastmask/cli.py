@@ -12,8 +12,10 @@ import os
 import re
 import pandas as pd
 
-from dotenv import load_dotenv
-load_dotenv()
+skip_dotenv=os.getenv('SKIP_PYTHONDOTENV', 'False').lower() in ('true', '1', 't')
+if not skip_dotenv:
+    from dotenv import load_dotenv
+    load_dotenv()
 
 EMAIL_PATTERN = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
