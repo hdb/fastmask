@@ -20,8 +20,14 @@ class MaskedMailClient:
 
     def __init__(self, username: str, token: str):
         """Initialize using a username and Fastmail API token"""
-        assert len(username) > 0
-        assert len(token) > 0
+
+        if username is not None and token is not None:
+            if len(username) == 0 and len(token) == 0:
+                print('No username/token found. Exiting...')
+                exit()
+        else:
+            print('No username/token found. Exiting...')
+            exit()
 
         self.hostname = HOSTNAME
         self.username = username
@@ -124,7 +130,7 @@ class MaskedMailClient:
 
         if sort_by is not None: #TODO remove items without None in sort_by?
             masked_email_list = sorted(masked_email_list, key=lambda x: (x[sort_by] is None, x[sort_by]), reverse=(sort_order == 'desc'))
-        
+
         if limit is not None:
             return masked_email_list[:limit]
 
