@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-with open("readme.md", "r") as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 exec(open('fastmask/version.py').read())
