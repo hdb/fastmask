@@ -73,7 +73,18 @@ def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, rec
 
     results = client.get(filters=filters, limit=limit, sort_by=sort, sort_order='desc' if desc else 'asc')
     if out is not None:
-        pd.DataFrame(results).to_csv(out, index=False)
+        column_order=[
+            'email',
+            'forDomain',
+            'description',
+            'state',
+            'lastMessageAt',
+            'url',
+            'id',
+            'createdAt',
+            'createdBy',
+        ]
+        pd.DataFrame(results).to_csv(out, index=False, columns=column_order)
     else:
         PrettyTable(results, title=f'Masked Emails {client.account_id}').out()
 
