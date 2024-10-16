@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Any
 import json
 import requests
 from datetime import datetime, timezone, timedelta
@@ -99,7 +99,7 @@ class MaskedMailClient:
         res.raise_for_status()
         return res.json()
 
-    def get(self, ids: list[str] | None = None, filters: Callable | None = None, sort_by: str | None = None, sort_order: str = 'asc', limit: int | None = None) -> list[dict]:
+    def get(self, ids: list[str] | None = None, filters: Callable | None = None, sort_by: str = 'createdAt', sort_order: str = 'asc', limit: int | None = None) -> list[dict]:
         """Get Masked Emails associated with account.
 
         ids [optional]: Return Masked Emails matching IDs
@@ -128,13 +128,22 @@ class MaskedMailClient:
         if filters is not None:
             masked_email_list = list(filter(filters, masked_email_list))
 
-        if sort_by is not None: #TODO remove items without None in sort_by?
-            masked_email_list = sorted(masked_email_list, key=lambda x: (x[sort_by] is None, x[sort_by]), reverse=(sort_order == 'desc'))
+        if sort_by is not None:
+            if sort_order == 'desc':
+                masked_email_list = sorted(masked_email_list, key=lambda x: (x[sort_by] is not None, x[sort_by]), reverse=True)
+            else:
+                masked_email_list = sorted(masked_email_list, key=lambda x: (self.__empty_or_none(x[sort_by]), x[sort_by]))
 
         if limit is not None:
             return masked_email_list[:limit]
 
         return masked_email_list
+
+    @staticmethod
+    def __empty_or_none(val: Any) -> bool:
+        if val is None: return True
+        if len(val) == 0: return True
+        return False
 
     def new(self, url: str | None = None, domain: str = '', description: str = '', state: str = 'enabled'):
         'Created a new Masked Email, optionally setting url, forDomain, description'

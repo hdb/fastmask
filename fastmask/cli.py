@@ -57,7 +57,7 @@ def cli(context, username: str, token: str):
 @click.option("--deleted", 'state', flag_value='deleted', help="Show only deleted addresses.")
 @click.option('--sort', type=click.Choice(
     ['email', 'createdAt', 'description', 'lastMessageAt', 'forDomain', 'url']
-    , case_sensitive=False), help='Field to sort by')
+    , case_sensitive=False), default='createdAt', help='Field to sort by')
 @click.option('--desc/--asc', default=False, help='Sort order')
 @click.option('--recent', default=None, type=int, help='Only show items from the past X days')
 @click.option('-o', '--out', default=None, type=str, help='Output to csv')
