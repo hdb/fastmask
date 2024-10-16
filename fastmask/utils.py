@@ -5,7 +5,7 @@ from rich import print, box
 from rich.table import Table
 from rich.console import Console
 from datetime import datetime
-
+import pandas as pd
 
 def error_msg(msg: str, exit_: bool = True) -> None:
     print(f'[red bold]{msg}')
@@ -25,6 +25,31 @@ def is_none(val) -> bool:
 def to_date(d: str) -> datetime:
     return datetime.strptime(d, config.TIME_FORMAT)
 
+def handle_output(r: list[dict], o: str, j: bool, t: str) -> None:
+
+    column_order = [
+        'email',
+        'forDomain',
+        'description',
+        'state',
+        'lastMessageAt',
+        'url',
+        'id',
+        'createdAt',
+        'createdBy',
+    ]
+
+    if o is not None:
+        if o.lower().endswith('.csv'):
+            pd.DataFrame(r).to_csv(o, index=False, columns=column_order)
+        elif o.lower().endswith('.json'):
+            pd.DataFrame(r).to_json(o, orient='records', indent=4)
+        else:
+            error_msg('Output is supported for json or csv format.')
+    elif j:
+        print(pd.DataFrame(r).to_json(orient='records', indent=4))
+    else:
+        PrettyTable(r, title=t).out()
 
 class PrettyTable():
 

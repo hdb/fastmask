@@ -1,16 +1,15 @@
 from fastmask.masked_email import MaskedMailClient
 from fastmask.utils import (
-    PrettyTable, 
-    error_msg, 
+    error_msg,
     success_msg,
-    to_date
+    to_date,
+    handle_output
 )
 
 import click
 from datetime import datetime, timezone, timedelta
 import os
 import re
-import pandas as pd
 
 skip_dotenv=os.getenv('SKIP_PYTHONDOTENV', 'False').lower() in ('true', '1', 't')
 if not skip_dotenv:
@@ -18,18 +17,6 @@ if not skip_dotenv:
     load_dotenv()
 
 EMAIL_PATTERN = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-
-COLUMN_ORDER = [
-    'email',
-    'forDomain',
-    'description',
-    'state',
-    'lastMessageAt',
-    'url',
-    'id',
-    'createdAt',
-    'createdBy',
-]
 
 @click.group()
 @click.option(
@@ -45,7 +32,7 @@ COLUMN_ORDER = [
 @click.pass_context
 def cli(context, username: str, token: str):
     """Manage Fastmail masked email from the command line"""
-    
+
     context.obj = MaskedMailClient(username=username,token=token)
 
 @cli.command(name='list')
@@ -60,11 +47,12 @@ def cli(context, username: str, token: str):
     , case_sensitive=False), default='createdAt', help='Field to sort by')
 @click.option('--desc/--asc', default=False, help='Sort order')
 @click.option('--recent', default=None, type=int, help='Only show items from the past X days')
-@click.option('-o', '--out', default=None, type=str, help='Output to csv')
+@click.option('-j', '--json', is_flag=True, default=False, help='Print to json instead of table')
+@click.option('-o', '--out', default=None, type=str, help='Output to csv or json file')
 @click.pass_obj
-def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, recent: int | None, sort: str | None, desc: bool, out: str | None):
+def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, recent: int | None, sort: str, desc: bool, json: bool, out: str | None):
     """List masked emails associated with account"""
-    
+
     state_map = {
         'active': (lambda x: x['state'] == 'enabled'),
         'blocked': (lambda x: x['state'] == 'disabled'),
@@ -83,21 +71,20 @@ def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, rec
     filters = (lambda x: state_map[state](x) and recent_filter(x))
 
     results = client.get(filters=filters, limit=limit, sort_by=sort, sort_order='desc' if desc else 'asc')
-    if out is not None:
-        pd.DataFrame(results).to_csv(out, index=False, columns=COLUMN_ORDER)
-    else:
-        PrettyTable(results, title=f'Masked Emails {client.account_id}').out()
+
+    handle_output(r=results, o=out, j=json, t=f'Masked Emails {client.account_id}')
 
 @cli.command()
 @click.argument('query', default='')
 @click.option('--blank', is_flag=True)
 @click.option('--field', '-f', 'fields', multiple=True, default=['email', 'description'])
 @click.option('--limit', default=None, type=int, help='Limit number of results')
-@click.option('-o', '--out', default=None, type=str, help='Output to csv')
+@click.option('-j', '--json', is_flag=True, default=False, help='Print to json instead of table')
+@click.option('-o', '--out', default=None, type=str, help='Output to csv or json file')
 @click.pass_obj
-def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], blank: bool, out: str | None):
+def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], blank: bool, json: bool, out: str | None):
     """Search for masked emails"""
-    
+
     if blank:
         results = client.get(filters=(lambda x: x['description'] == ''), limit=limit)
     elif len(query)==0:
@@ -105,10 +92,7 @@ def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], 
     else:
         results = client.search(query=query, fields=fields)
 
-    if out is not None:
-        pd.DataFrame(results).to_csv(out, index=False, columns=COLUMN_ORDER)
-    else:
-        PrettyTable(results, title=f'Search results for "{query if query is not None else ""}"').out()
+    handle_output(r=results, o=out, j=json, t=f'Search results for "{query if query is not None else ""}"')
 
 @cli.command()
 @click.argument('description', default='')
@@ -118,7 +102,7 @@ def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], 
 @click.pass_obj
 def new(client: MaskedMailClient, description: str, url: str, domain: str, pending: bool):
     """Create a new masked email"""
-    
+
     response = client.new(
         description=description,
         url=url,
@@ -138,7 +122,7 @@ def new(client: MaskedMailClient, description: str, url: str, domain: str, pendi
 @click.pass_obj
 def update(client: MaskedMailClient, id_: str, changes: dict):
     """Update a masked email. Called by edit, activate, block, delete"""
-    
+
     def get_masked_email_id(id_):
         if id_.startswith('masked-') and id_[7:].isnumeric():
             result = client.get(ids=[id_])
@@ -173,7 +157,7 @@ def update(client: MaskedMailClient, id_: str, changes: dict):
 @click.pass_obj
 def edit(client: MaskedMailClient, id_: str, description: str, url: str | None, domain: str | None):
     """Edit information associated with a masked email"""
-    
+
     changes = {
         'description': description,
         'url': url,
