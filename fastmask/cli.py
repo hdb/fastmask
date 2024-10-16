@@ -19,6 +19,17 @@ if not skip_dotenv:
 
 EMAIL_PATTERN = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
+COLUMN_ORDER = [
+    'email',
+    'forDomain',
+    'description',
+    'state',
+    'lastMessageAt',
+    'url',
+    'id',
+    'createdAt',
+    'createdBy',
+]
 
 @click.group()
 @click.option(
@@ -73,18 +84,7 @@ def list_cmd(client: MaskedMailClient, limit: int | None, state: str | None, rec
 
     results = client.get(filters=filters, limit=limit, sort_by=sort, sort_order='desc' if desc else 'asc')
     if out is not None:
-        column_order=[
-            'email',
-            'forDomain',
-            'description',
-            'state',
-            'lastMessageAt',
-            'url',
-            'id',
-            'createdAt',
-            'createdBy',
-        ]
-        pd.DataFrame(results).to_csv(out, index=False, columns=column_order)
+        pd.DataFrame(results).to_csv(out, index=False, columns=COLUMN_ORDER)
     else:
         PrettyTable(results, title=f'Masked Emails {client.account_id}').out()
 
@@ -106,7 +106,7 @@ def search(client: MaskedMailClient, query: str, limit: int, fields: list[str], 
         results = client.search(query=query, fields=fields)
 
     if out is not None:
-        pd.DataFrame(results).to_csv(out, index=False)
+        pd.DataFrame(results).to_csv(out, index=False, columns=COLUMN_ORDER)
     else:
         PrettyTable(results, title=f'Search results for "{query if query is not None else ""}"').out()
 
