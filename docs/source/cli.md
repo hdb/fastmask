@@ -8,6 +8,7 @@ fastmask [OPTIONS] COMMAND [ARGS]...
   Manage Fastmail masked email from the command line
 
 Options:
+  --version        Show the version and exit.
   --username TEXT  [default: (FM_USERNAME)]
   --token TEXT     [default: (FM_ME_TOKEN)]
   --help           Show this message and exit.
@@ -59,7 +60,7 @@ fastmask new twitter --url twitter.com
 
 ## List
 
-`fastmask list` will return a Rich table of masked emails, optionally filtering results by active/blocked state, recent, used/unused status, etc.
+`fastmask list` will return a Rich table, json, or csv of masked emails, optionally filtering results by active/blocked state, recent, used/unused status, etc.
 
 Usage:
 
@@ -70,16 +71,31 @@ fastmask list [OPTIONS]
 
 Options:
   --limit INTEGER                 Limit number of results
-  --active                        Show only active addresses.
-  --blocked                       Show only blocked addresses.
-  --unused                        Show only active + unused addresses.
-  --used                          Show only used addresses.
-  --deleted                       Show only deleted addresses.
+  --active                        Show only active addresses
+  --blocked                       Show only blocked addresses
+  --unused                        Show only active + unused addresses
+  --used                          Show only used addresses
+  --deleted                       Show only deleted addresses
   --sort                          Field to sort by
   --desc / --asc                  Sort order
   --recent INTEGER                Only show items from the past X days
-  -o, --out TEXT                  Output to csv
+  -j, --json                      Print to json instead of table
+  -o, --out TEXT                  Output to csv or json file
   --help                          Show this message and exit.
+```
+
+Examples:
+
+```bash
+fastmask list --unused
+```
+
+```bash
+fastmask list --blocked --limit 20 --json
+```
+
+```bash
+fastmask list --sort lastMessageAt --desc --active
 ```
 
 ## Activate / Block / Delete

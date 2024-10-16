@@ -39,11 +39,11 @@ def cli(context, username: str, token: str):
 
 @cli.command(name='list')
 @click.option('--limit', default=None, type=int, help='Limit number of results')
-@click.option("--active", 'state', flag_value='active', help="Show only active addresses.")
-@click.option("--blocked", 'state', flag_value='blocked', help="Show only blocked addresses.")
-@click.option("--unused", 'state', flag_value='unused', help="Show only active + unused addresses.")
-@click.option("--used", 'state', flag_value='used', help="Show only used addresses.")
-@click.option("--deleted", 'state', flag_value='deleted', help="Show only deleted addresses.")
+@click.option("--active", 'state', flag_value='active', help="Show only active addresses")
+@click.option("--blocked", 'state', flag_value='blocked', help="Show only blocked addresses")
+@click.option("--unused", 'state', flag_value='unused', help="Show only active + unused addresses")
+@click.option("--used", 'state', flag_value='used', help="Show only used addresses")
+@click.option("--deleted", 'state', flag_value='deleted', help="Show only deleted addresses")
 @click.option('--sort', type=click.Choice(
     ['email', 'createdAt', 'description', 'lastMessageAt', 'forDomain', 'url']
     , case_sensitive=False), default='createdAt', help='Field to sort by')
