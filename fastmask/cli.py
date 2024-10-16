@@ -5,6 +5,7 @@ from fastmask.utils import (
     to_date,
     handle_output
 )
+from fastmask.version import __version__
 
 import click
 from datetime import datetime, timezone, timedelta
@@ -19,6 +20,7 @@ if not skip_dotenv:
 EMAIL_PATTERN = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 @click.group()
+@click.version_option(__version__)
 @click.option(
     "--username",
     default=lambda: os.environ.get("FM_USERNAME", ""),
